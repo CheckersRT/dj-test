@@ -6,8 +6,9 @@ import styles from "./Player.module.css";
 import io from "socket.io-client";
 
 const socket = io.connect("http://localhost:3001");
-
 export default function Player({ onChange }) {
+  const [message, setMessage] = useState("")
+  const [messageReceived, setMessageReceived] = useState("")
   const [audioFile, setAudioFile] = useState("");
   const [audioUrlCh1, setAudioUrlCh1] = useState("");
   const [audioUrlCh2, setAudioUrlCh2] = useState("");
@@ -30,15 +31,30 @@ export default function Player({ onChange }) {
   const mixerArray = useRef();
 
   function sendChange() {
-    socket.emit("send_message", { message: "hello" });
+    socket.emit("send_message", { message });
   }
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      alert(data.message)
+      setMessageReceived(data.message)
+      // alert(data.message);
+    });
+
+    socket.on("receive_controlInput", (event) => {
+      const channel = event.target.name.split("-")[0];
+      const channelCaps = channel.charAt(0).toUpperCase() + channel.slice(1);
+      const type = event.target.name.split("-")[1];
+      const objectName = type + channelCaps;
+      const param = event.target.name.split("-")[2];
+      const nodeObject = mixerArray.current.find(
+        (obj) => obj.name === objectName
+      );
+      nodeObject[param].value = event.target.value;
+      console.log(nodeObject[param].value);
+  
     })
 
-  }, [socket])
+  }, [socket]);
 
   useEffect(() => {
     playerMaster.current = new Tone.Players({
@@ -139,7 +155,11 @@ export default function Player({ onChange }) {
     playerMaster.current.stopAll();
   }
 
-  function handleControl(event) {
+  function handleControl(event, sendReceive) {
+    // if(sendReceive === "send") {
+      socket.emit("send_controlInput", {event})
+    // } 
+
     const channel = event.target.name.split("-")[0];
     const channelCaps = channel.charAt(0).toUpperCase() + channel.slice(1);
     const type = event.target.name.split("-")[1];
@@ -150,6 +170,7 @@ export default function Player({ onChange }) {
     );
     nodeObject[param].value = event.target.value;
     console.log(nodeObject[param].value);
+
   }
 
   async function handleSubmit(event) {
@@ -345,8 +366,11 @@ export default function Player({ onChange }) {
         />
         <button onClick={handleStopAll}>Stop All</button>
       </div>
-      <label htmlFor="test">Test</label>
-      <input type="text" id="test" onChange={sendChange} />
+      {/* <label htmlFor="test">Test</label>
+      <input type="text" id="test" onChange={(event) => setMessage(event.target.value)}/>
+      <button onClick={sendChange}>Send</button>
+      <h2>Message:</h2>
+      <p>{messageReceived}</p> */}
     </div>
   );
 }
