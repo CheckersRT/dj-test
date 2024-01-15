@@ -7,8 +7,8 @@ import io from "socket.io-client";
 
 const socket = io.connect("http://localhost:3001");
 export default function Player({ onChange }) {
-  const [message, setMessage] = useState("")
-  const [messageReceived, setMessageReceived] = useState("")
+  const [message, setMessage] = useState("");
+  const [messageReceived, setMessageReceived] = useState("");
   const [audioFile, setAudioFile] = useState("");
   const [audioUrlCh1, setAudioUrlCh1] = useState("");
   const [audioUrlCh2, setAudioUrlCh2] = useState("");
@@ -36,22 +36,25 @@ export default function Player({ onChange }) {
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      setMessageReceived(data.message)
+      setMessageReceived(data.message);
       // alert(data.message);
     });
 
     socket.on("receive_controlInput", (event) => {
-      const channel = event.target.name.split("-")[0];
-      const channelCaps = channel.charAt(0).toUpperCase() + channel.slice(1);
-      const type = event.target.name.split("-")[1];
-      const objectName = type + channelCaps;
-      const param = event.target.name.split("-")[2];
-      const nodeObject = mixerArray.current.find(
-        (obj) => obj.name === objectName
-      );
-      nodeObject[param].value = event.target.value;
-      console.log(nodeObject[param].value);
-  
+      handleControl(event, "receive");
+    });
+
+    socket.on("receive_playCh1", () => {
+      playerCh1.current.start(0);
+    })
+    socket.on("receive_playCh2", () => {
+      playerCh2.current.start(0);
+    })
+    socket.on("receive_pauseCh1", () => {
+      playerCh1.current.stop();
+    })
+    socket.on("receive_pauseCh2", () => {
+      playerCh2.current.stop();
     })
 
   }, [socket]);
@@ -138,17 +141,21 @@ export default function Player({ onChange }) {
   }, [audioUrlCh1, audioUrlCh2]);
 
   function handlePlay(event) {
-    playerCh1.current.start();
+    playerCh1.current.start(0);
+    socket.emit("send_playCh1")
   }
 
   function handlePlay2() {
-    playerCh2.current.start();
+    playerCh2.current.start(0);
+    socket.emit("send_playCh2")
   }
   function handlePause() {
     playerCh1.current.stop();
+    socket.emit("send_pauseCh1")
   }
   function handlePause2() {
     playerCh2.current.stop();
+    socket.emit("send_pauseCh2")
   }
 
   function handleStopAll() {
@@ -156,21 +163,22 @@ export default function Player({ onChange }) {
   }
 
   function handleControl(event, sendReceive) {
-    // if(sendReceive === "send") {
-      socket.emit("send_controlInput", {event})
-    // } 
-
-    const channel = event.target.name.split("-")[0];
+    if(sendReceive === "send") {
+    socket.emit("send_controlInput", {
+      name: event.name,
+      value: event.value,
+    });
+    }
+    const channel = event.name.split("-")[0];
     const channelCaps = channel.charAt(0).toUpperCase() + channel.slice(1);
-    const type = event.target.name.split("-")[1];
+    const type = event.name.split("-")[1];
     const objectName = type + channelCaps;
-    const param = event.target.name.split("-")[2];
+    const param = event.name.split("-")[2];
     const nodeObject = mixerArray.current.find(
       (obj) => obj.name === objectName
     );
-    nodeObject[param].value = event.target.value;
+    nodeObject[param].value = event.value;
     console.log(nodeObject[param].value);
-
   }
 
   async function handleSubmit(event) {
@@ -232,7 +240,7 @@ export default function Player({ onChange }) {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         <label htmlFor="ch1-eq-high">High</label>
         <input
@@ -241,7 +249,7 @@ export default function Player({ onChange }) {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         <label htmlFor="ch1-eq-mid">Mid</label>
         <input
@@ -250,7 +258,7 @@ export default function Player({ onChange }) {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         <label htmlFor="ch1-eq-low">Low</label>
         <input
@@ -259,7 +267,7 @@ export default function Player({ onChange }) {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         {/* <label htmlFor="ch1-filter-frequency">Filter</label>
         <input
@@ -278,7 +286,7 @@ export default function Player({ onChange }) {
           min={-20}
           max={10}
           step={1}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         <PlayButton onPlay={handlePlay} />
         <button onClick={handlePause}>Pause</button>
@@ -302,7 +310,7 @@ export default function Player({ onChange }) {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         <label htmlFor="ch2-eq-high">High</label>
         <input
@@ -311,7 +319,7 @@ export default function Player({ onChange }) {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         <label htmlFor="ch2-eq-mid">Mid</label>
         <input
@@ -320,7 +328,7 @@ export default function Player({ onChange }) {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         <label htmlFor="ch2-eq-low">Low</label>
         <input
@@ -329,7 +337,7 @@ export default function Player({ onChange }) {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         {/* <label htmlFor="ch2-filter-frequency">Filter</label>
         <input
@@ -348,7 +356,7 @@ export default function Player({ onChange }) {
           min={-20}
           max={10}
           step={1}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         <PlayButton onPlay={handlePlay2} />
         <button onClick={handlePause2}>Pause</button>
@@ -362,15 +370,19 @@ export default function Player({ onChange }) {
           min={0}
           max={1}
           step={0.01}
-          onChange={(event) => handleControl(event)}
+          onChange={(event) => handleControl(event.target, "send")}
         />
         <button onClick={handleStopAll}>Stop All</button>
       </div>
-      {/* <label htmlFor="test">Test</label>
-      <input type="text" id="test" onChange={(event) => setMessage(event.target.value)}/>
+      <label htmlFor="test">Test</label>
+      <input
+        type="text"
+        id="test"
+        onChange={(event) => setMessage(event.target.value)}
+      />
       <button onClick={sendChange}>Send</button>
       <h2>Message:</h2>
-      <p>{messageReceived}</p> */}
+      <p>{messageReceived}</p>
     </div>
   );
 }

@@ -30,6 +30,21 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("receive_controlInput", data)
   })
 
+  socket.on("send_playCh1", () => {
+    socket.broadcast.emit("receive_playCh1")
+  })
+
+  socket.on("send_playCh2", () => {
+    socket.broadcast.emit("receive_playCh2")
+  })
+
+  socket.on("send_pauseCh1", () => {
+    socket.broadcast.emit("receive_pauseCh1")
+  })
+
+  socket.on("send_pauseCh2", () => {
+    socket.broadcast.emit("receive_pauseCh2")
+  })
 
 });
 
