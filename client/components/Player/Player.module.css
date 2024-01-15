@@ -28,9 +28,6 @@
   height: 50px;
 }
 
-.container > input[type="range"] {
-  /* appearance: slider-vertical; */
-}
 
 .container > * {
   border: white 1px solid;

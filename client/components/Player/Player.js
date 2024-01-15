@@ -6,9 +6,8 @@ import styles from "./Player.module.css";
 import io from "socket.io-client";
 
 const socket = io.connect("http://localhost:3001");
-export default function Player({ onChange }) {
-  const [message, setMessage] = useState("");
-  const [messageReceived, setMessageReceived] = useState("");
+
+export default function Player() {
   const [audioFile, setAudioFile] = useState("");
   const [audioUrlCh1, setAudioUrlCh1] = useState("");
   const [audioUrlCh2, setAudioUrlCh2] = useState("");
@@ -30,25 +29,17 @@ export default function Player({ onChange }) {
   const meterCh2 = useRef();
   const mixerArray = useRef();
 
-  function sendChange() {
-    socket.emit("send_message", { message });
-  }
-
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setMessageReceived(data.message);
-      // alert(data.message);
-    });
-
     socket.on("receive_controlInput", (event) => {
       handleControl(event, "receive");
     });
-
     socket.on("receive_playCh1", () => {
-      playerCh1.current.start(0);
+      console.log("This shouldn't happen until Play: ", playerCh1.current.context)
+      // const now = Tone.now()
+      playerCh1.current.start();
     })
     socket.on("receive_playCh2", () => {
-      playerCh2.current.start(0);
+      playerCh2.current.start();
     })
     socket.on("receive_pauseCh1", () => {
       playerCh1.current.stop();
@@ -57,9 +48,18 @@ export default function Player({ onChange }) {
       playerCh2.current.stop();
     })
 
+    return () => {
+      socket.off("receive_controlInput");
+      socket.off("receive_playCh1");
+      socket.off("receive_playCh2");
+      socket.off("receive_pauseCh1");
+      socket.off("receive_pauseCh2");
+    };
+
   }, [socket]);
 
   useEffect(() => {
+
     playerMaster.current = new Tone.Players({
       urls: {
         // playerCh1: audioUrlCh1,
@@ -141,21 +141,24 @@ export default function Player({ onChange }) {
   }, [audioUrlCh1, audioUrlCh2]);
 
   function handlePlay(event) {
-    playerCh1.current.start(0);
     socket.emit("send_playCh1")
+    // const now = Tone.now()
+    console.log(playerCh1.current.context)
+    playerCh1.current.start();
   }
 
   function handlePlay2() {
-    playerCh2.current.start(0);
     socket.emit("send_playCh2")
+    // const now = Tone.now()
+    playerCh2.current.start();
   }
   function handlePause() {
-    playerCh1.current.stop();
     socket.emit("send_pauseCh1")
+    playerCh1.current.stop();
   }
   function handlePause2() {
-    playerCh2.current.stop();
     socket.emit("send_pauseCh2")
+    playerCh2.current.stop();
   }
 
   function handleStopAll() {
@@ -374,15 +377,6 @@ export default function Player({ onChange }) {
         />
         <button onClick={handleStopAll}>Stop All</button>
       </div>
-      <label htmlFor="test">Test</label>
-      <input
-        type="text"
-        id="test"
-        onChange={(event) => setMessage(event.target.value)}
-      />
-      <button onClick={sendChange}>Send</button>
-      <h2>Message:</h2>
-      <p>{messageReceived}</p>
     </div>
   );
 }
