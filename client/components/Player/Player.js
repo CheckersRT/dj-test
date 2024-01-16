@@ -10,6 +10,8 @@ import { socketsOn, socketsOff } from "@/utils/socketsOnOff";
 import { handlePlayPause } from "@/utils/Controls/handlePlayPause";
 import handleStopAll from "@/utils/Controls/handleStopAll";
 import handleControl from "@/utils/Controls/handleControl";
+import CueButton from "../CueButton/CueButton";
+import handleCue from "@/utils/Controls/handleStopAll";
 
 export const socket = io.connect("http://localhost:3001");
 
@@ -88,7 +90,6 @@ export default function Player() {
 
     return () => {
       socketsOff();
-
     };
   }, [socket]);
 
@@ -171,6 +172,7 @@ export default function Player() {
           step={1}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
+        <CueButton onCue={handleCue} />
         <PlayPauseButton
           player={playerCh1}
           onPlayPause={handlePlayPause}
@@ -246,6 +248,7 @@ export default function Player() {
           step={1}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
+        <CueButton onCue={handleCue} />
         <PlayPauseButton
           player={playerCh2}
           onPlayPause={handlePlayPause}
