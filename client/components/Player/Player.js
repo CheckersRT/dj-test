@@ -5,8 +5,18 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./Player.module.css";
 import io from "socket.io-client";
 import setUpAudio from "@/utils/setUpAudio";
+import uploadAudio from "@/utils/uploadAudio";
+import { socketsOn, socketsOff } from "@/utils/socketsOnOff";
+import {
+  handlePlay,
+  handlePlay2,
+  handlePause,
+  handlePause2,
+} from "@/utils/Controls/handlePlayPause";
+import handleStopAll from "@/utils/Controls/handleStopAll";
+import handleControl from "@/utils/Controls/handleControl";
 
-const socket = io.connect("http://localhost:3001");
+export const socket = io.connect("http://localhost:3001");
 
 export default function Player() {
   // STATES
@@ -24,56 +34,31 @@ export default function Player() {
   const crossFader = useRef();
   const gainCh1 = useRef();
   const gainCh2 = useRef();
-  // const filterHpCh1 = useRef();
-  // const filterHpCh2 = useRef();
-  // const filterLpCh1 = useRef();
-  // const filterLpCh2 = useRef();
+  const filterHpCh1 = useRef();
+  const filterHpCh2 = useRef();
+  const filterLpCh1 = useRef();
+  const filterLpCh2 = useRef();
   const meterCh1 = useRef();
   const meterCh2 = useRef();
-  // const mixerArray = useRef();
+  const mixerArray = useRef();
 
-  // mixerArray.current = [];
-  // mixerArray.current.push(
-  //   playerMaster.current,
-  //   playerCh1.current,
-  //   playerCh2.current,
-  //   gainCh1.current,
-  //   gainCh2.current,
-  //   eqCh1.current,
-  //   eqCh2.current,
-  //   // filterHpCh1.current,
-  //   // filterLpCh1.current,
-  //   // filterHpCh2.current,
-  //   // filterLpCh2.current,
-  //   crossFader.current
-  // );
+  mixerArray.current = [];
+  mixerArray.current.push(
+    playerCh1,
+    playerCh2,
+    playerMaster,
+    eqCh1,
+    eqCh2,
+    crossFader,
+    gainCh1,
+    gainCh2,
+    filterHpCh1,
+    filterHpCh2,
+    filterLpCh1,
+    filterLpCh2
+  );
 
-  useEffect(() => {
-    socket.on("receive_controlInput", (event) => {
-      handleControl(event, "receive");
-    });
-    socket.on("receive_playCh1", () => {
-      playerCh1.current.start();
-    });
-    socket.on("receive_playCh2", () => {
-      playerCh2.current.start();
-    });
-    socket.on("receive_pauseCh1", () => {
-      playerCh1.current.stop();
-    });
-    socket.on("receive_pauseCh2", () => {
-      playerCh2.current.stop();
-    });
-
-    return () => {
-      socket.off("receive_controlInput");
-      socket.off("receive_playCh1");
-      socket.off("receive_playCh2");
-      socket.off("receive_pauseCh1");
-      socket.off("receive_pauseCh2");
-    };
-  }, [socket]);
-
+  // AUDIO NODE CHAIN SET UP
   useEffect(() => {
     setUpAudio(
       playerCh1,
@@ -87,167 +72,25 @@ export default function Player() {
       audioUrlCh1,
       audioUrlCh2
     );
-
-    // playerMaster.current = new Tone.Players({
-    //   urls: {
-    //     // playerCh1: audioUrlCh1,
-    //     playerCh1: "/Prevail.wav",
-    //     // playerCh2: audioUrlCh2,
-    //     playerCh2: "/DamnFineDay.wav",
-    //   },
-    //   onload: () => {
-    //     console.log("loaded");
-    //   },
-    // });
-
-    // playerCh1.current = playerMaster.current.player("playerCh1");
-    // playerCh1.current.name = "playerCh1";
-    // playerCh2.current = playerMaster.current.player("playerCh2");
-    // playerCh2.current.name = "playerCh2";
-
-    // gainCh1.current = new Tone.Gain();
-    // gainCh1.current.name = "gainCh1";
-    // gainCh2.current = new Tone.Gain();
-    // gainCh2.current.name = "gainCh2";
-    // console.log(gainCh1.current);
-
-    // eqCh1.current = new Tone.EQ3();
-    // eqCh1.current.name = "eqCh1";
-    // eqCh2.current = new Tone.EQ3();
-    // eqCh2.current.name = "eqCh2";
-
-    // // filterHpCh1.current = new Tone.Filter();
-    // // filterHpCh1.current.name = "filterHpCh1";
-    // // filterHpCh2.current = new Tone.Filter();
-    // // filterHpCh2.current.name = "filterHpCh2";
-    // // console.log(filterHpCh1);
-
-    // // filterLpCh1.current = new Tone.Filter();
-    // // filterLpCh1.current.name = "filterLpCh1";
-    // // filterLpCh2.current = new Tone.Filter();
-    // // filterLpCh2.current.name = "filterLpCh2";
-    // // console.log(filterLpCh1);
-
-    // meterCh1.current = new Tone.Meter();
-    // meterCh1.current.name = "meterCh1";
-    // meterCh2.current = new Tone.Meter();
-    // meterCh2.current.name = "meterCh1";
-
-    // crossFader.current = new Tone.CrossFade();
-    // crossFader.current.name = "crossFaderChAll";
-    // crossFader.current.toDestination();
-
-    // playerCh1.current.chain(
-    //   gainCh1.current,
-    //   eqCh1.current,
-    //   // filterHpCh1.current,
-    //   // filterLpCh1.current,
-    //   crossFader.current.a
-    // );
-    // playerCh2.current.chain(
-    //   gainCh2.current,
-    //   eqCh2.current,
-    //   // filterHpCh2.current,
-    //   // filterLpCh2.current,
-    //   crossFader.current.b
-    // );
-
-    // mixerArray.current = [];
-    // mixerArray.current.push(
-    //   playerCh1.current,
-    //   playerCh2.current,
-    //   gainCh1.current,
-    //   gainCh2.current,
-    //   eqCh1.current,
-    //   eqCh2.current,
-    //   // filterHpCh1.current,
-    //   // filterLpCh1.current,
-    //   // filterHpCh2.current,
-    //   // filterLpCh2.current,
-    //   crossFader.current
-    // );
   }, [audioUrlCh1, audioUrlCh2]);
 
-  function handlePlay(event) {
-    socket.emit("send_playCh1");
-    // const now = Tone.now()
-    console.log(playerCh1.current.context);
-    playerCh1.current.start();
-  }
+  // LISTEN FOR SOCKETS
+  useEffect(() => {
+    socketsOn(playerCh1, playerCh2, handleControl, mixerArray);
 
-  function handlePlay2() {
-    socket.emit("send_playCh2");
-    // const now = Tone.now()
-    playerCh2.current.start();
-  }
-  function handlePause() {
-    socket.emit("send_pauseCh1");
-    playerCh1.current.stop();
-  }
-  function handlePause2() {
-    socket.emit("send_pauseCh2");
-    playerCh2.current.stop();
-  }
-
-  function handleStopAll() {
-    playerMaster.current.stopAll();
-  }
-
-  function handleControl(event, sendReceive) {
-    if (sendReceive === "send") {
-      socket.emit("send_controlInput", {
-        name: event.name,
-        value: event.value,
-      });
-    }
-    const channel = event.name.split("-")[0];
-    const channelCaps = channel.charAt(0).toUpperCase() + channel.slice(1);
-    const type = event.name.split("-")[1];
-    const objectName = type + channelCaps;
-    const param = event.name.split("-")[2];
-    const nodeObject = mixerArray.current.find(
-      (obj) => obj.name === objectName
-    );
-    nodeObject[param].value = event.value;
-    console.log(nodeObject[param].value);
-  }
+    return () => {
+      socketsOff();
+    };
+  }, [socket]);
 
   async function handleSubmit(event) {
+    console.log(audioFile);
     event.preventDefault();
-    const url = await uploadAudio();
     console.log(event.target.name);
+    const url = await uploadAudio(audioFile, setIsLoading);
     event.target.name === "player1" && setAudioUrlCh1(url);
     event.target.name === "player2" && setAudioUrlCh2(url);
   }
-
-  const CLOUD_NAME = "dm1n4kfee";
-  const UPLOAD_PRESET = "y0myraqm";
-
-  const uploadAudio = async () => {
-    if (!audioFile) return;
-    setIsLoading(true);
-    const formData = new FormData();
-    formData.append("file", audioFile);
-    formData.append("upload_preset", UPLOAD_PRESET);
-    try {
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      const data = await res.json();
-      const url = data.secure_url;
-      console.log(url);
-      setIsLoading(false);
-      return data.secure_url;
-    } catch (error) {
-      console.error(error);
-      setIsLoading(false);
-      return null;
-    }
-  };
 
   return (
     <div className={styles.main}>
@@ -271,7 +114,7 @@ export default function Player() {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
         <label htmlFor="ch1-eq-high">High</label>
         <input
@@ -280,7 +123,7 @@ export default function Player() {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
         <label htmlFor="ch1-eq-mid">Mid</label>
         <input
@@ -289,7 +132,7 @@ export default function Player() {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
         <label htmlFor="ch1-eq-low">Low</label>
         <input
@@ -298,7 +141,7 @@ export default function Player() {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
         {/* <label htmlFor="ch1-filter-frequency">Filter</label>
         <input
@@ -317,10 +160,10 @@ export default function Player() {
           min={-20}
           max={10}
           step={1}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <PlayButton onPlay={handlePlay} />
-        <button onClick={handlePause}>Pause</button>
+        <PlayButton player={playerCh1} onPlay={handlePlay} />
+        <button onClick={() => handlePause(playerCh1)}>Pause</button>
 
         {/* CHANNEL 2 */}
         <form name="player2" onSubmit={handleSubmit}>
@@ -341,7 +184,7 @@ export default function Player() {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
         <label htmlFor="ch2-eq-high">High</label>
         <input
@@ -350,7 +193,7 @@ export default function Player() {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
         <label htmlFor="ch2-eq-mid">Mid</label>
         <input
@@ -359,7 +202,7 @@ export default function Player() {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
         <label htmlFor="ch2-eq-low">Low</label>
         <input
@@ -368,7 +211,7 @@ export default function Player() {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
         {/* <label htmlFor="ch2-filter-frequency">Filter</label>
         <input
@@ -387,10 +230,10 @@ export default function Player() {
           min={-20}
           max={10}
           step={1}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <PlayButton onPlay={handlePlay2} />
-        <button onClick={handlePause2}>Pause</button>
+        <PlayButton onPlay={handlePlay2} player={playerCh2} />
+        <button onClick={() => handlePause2(playerCh2)}>Pause</button>
       </div>
       <div className={styles.crossfader}>
         <label htmlFor="chAll-crossFader-fade">Crossfader</label>
@@ -401,9 +244,9 @@ export default function Player() {
           min={0}
           max={1}
           step={0.01}
-          onChange={(event) => handleControl(event.target, "send")}
+          onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <button onClick={handleStopAll}>Stop All</button>
+        <button onClick={() => handleStopAll(playerMaster)}>Stop All</button>
       </div>
     </div>
   );

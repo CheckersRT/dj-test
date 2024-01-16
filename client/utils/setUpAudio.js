@@ -15,7 +15,7 @@ export default function setUpAudio(
 ) {
   playerMaster.current = new Tone.Players({
     urls: {
-      // playerCh1: urlCh1,
+    //   playerCh1: audioUrlCh1,
       playerCh1: "/Prevail.wav",
       // playerCh2: urlCh2,
       playerCh2: "/DamnFineDay.wav",
