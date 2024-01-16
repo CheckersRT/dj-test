@@ -7,12 +7,7 @@ import io from "socket.io-client";
 import setUpAudio from "@/utils/setUpAudio";
 import uploadAudio from "@/utils/uploadAudio";
 import { socketsOn, socketsOff } from "@/utils/socketsOnOff";
-import {
-  handlePlayPause,
-  handlePlay2,
-  handlePause,
-  handlePause2,
-} from "@/utils/Controls/handlePlayPause";
+import { handlePlayPause } from "@/utils/Controls/handlePlayPause";
 import handleStopAll from "@/utils/Controls/handleStopAll";
 import handleControl from "@/utils/Controls/handleControl";
 
@@ -79,49 +74,20 @@ export default function Player() {
 
   // LISTEN FOR RECEIVED SOCKETS MESSAGES
   useEffect(() => {
-    // socketsOn(
-    //   playerCh1,
-    //   playerCh2,
-    //   handleControl,
-    //   handlePlayPause,
-    //   mixerArray,
-    //   setPlayTime,
-    //   playTime,
-    //   setTimeElapsed,
-    //   timeElapsed
-    // );
-    socket.on("receive_controlInput", (event) => {
-      handleControl(event, "receive", mixerArray);
-    });
-  
-    socket.on("receive_playCh1", () => {
-      handlePlayPause(
-        playerCh1,
-        setPlayTime,
-        playTime,
-        setTimeElapsed,
-        timeElapsed,
-        "Receive"
-      );
-    });
-    socket.on("receive_playCh2", () => {
-      playerCh2.current.start();
-    });
-    socket.on("receive_pauseCh1", () => {
-      playerCh1.current.stop();
-    });
-    socket.on("receive_pauseCh2", () => {
-      playerCh2.current.stop();
-    });
-
+    socketsOn(
+      playerCh1,
+      playerCh2,
+      handleControl,
+      handlePlayPause,
+      mixerArray,
+      setPlayTime,
+      playTime,
+      setTimeElapsed,
+      timeElapsed
+    );
 
     return () => {
-      // socketsOff();
-      socket.off("receive_controlInput");
-      socket.off("receive_playCh1");
-      socket.off("receive_playCh2");
-      socket.off("receive_pauseCh1");
-      socket.off("receive_pauseCh2");
+      socketsOff();
 
     };
   }, [socket]);
@@ -213,8 +179,6 @@ export default function Player() {
           setTimeElapsed={setTimeElapsed}
           timeElapsed={timeElapsed}
         />
-        <button onClick={() => handlePause(playerCh1)}>Pause</button>
-
         {/* CHANNEL 2 */}
         <form name="player2" onSubmit={handleSubmit}>
           <label htmlFor="image">Deck 2</label>
@@ -282,8 +246,14 @@ export default function Player() {
           step={1}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <PlayPauseButton onPlayPause={handlePlay2} player={playerCh2} />
-        <button onClick={() => handlePause2(playerCh2)}>Pause</button>
+        <PlayPauseButton
+          player={playerCh2}
+          onPlayPause={handlePlayPause}
+          setPlayTime={setPlayTime}
+          playTime={playTime}
+          setTimeElapsed={setTimeElapsed}
+          timeElapsed={timeElapsed}
+        />
       </div>
       <div className={styles.crossfader}>
         <label htmlFor="chAll-crossFader-fade">Crossfader</label>

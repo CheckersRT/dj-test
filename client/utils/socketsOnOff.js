@@ -13,37 +13,29 @@ export function socketsOn(
   timeElapsed
 ) {
 
-  console.log("socketsOn is called")
   socket.on("receive_controlInput", (event) => {
     handleControl(event, "receive", mixerArray);
   });
 
-  socket.on("receive_playCh1", () => {
+  socket.on("receive_playPause", (data) => {
+    let player;
+    if (data.player === "playerCh1") {
+      player = playerCh1;
+    } else if (data.player === "playerCh2") {
+      player = playerCh2;
+    }
     handlePlayPause(
-      playerCh1,
+      player,
       setPlayTime,
       playTime,
       setTimeElapsed,
       timeElapsed,
       "Receive"
     );
-    // playerCh1.current.start();
-  });
-  socket.on("receive_playCh2", () => {
-    playerCh2.current.start();
-  });
-  socket.on("receive_pauseCh1", () => {
-    playerCh1.current.stop();
-  });
-  socket.on("receive_pauseCh2", () => {
-    playerCh2.current.stop();
   });
 }
 
 export function socketsOff() {
   socket.off("receive_controlInput");
-  socket.off("receive_playCh1");
-  socket.off("receive_playCh2");
-  socket.off("receive_pauseCh1");
-  socket.off("receive_pauseCh2");
+  socket.off("receive_playPause");
 }
