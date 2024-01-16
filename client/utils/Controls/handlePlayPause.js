@@ -1,8 +1,10 @@
 import { socket } from "@/components/Player/Player";
 
-export function handlePlay(playerCh1) {
-  socket.emit("send_playCh1");
-  playerCh1.current.start();
+export function handlePlay(player, setPlayTime, playTime, setElaspedTime, elaspedTime) {
+  
+  
+    socket.emit("send_playCh1");
+  player.current.start();
 }
 
 export function handlePlay2(playerCh2) {

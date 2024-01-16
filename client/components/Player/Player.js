@@ -1,5 +1,5 @@
 "use client";
-import PlayButton from "@/components/PlayButton/PlayButton";
+import PlayPauseButton from "@/components/PlayPauseButton/PlayPauseButton";
 import * as Tone from "tone/build/esm";
 import { useEffect, useRef, useState } from "react";
 import styles from "./Player.module.css";
@@ -24,6 +24,9 @@ export default function Player() {
   const [audioUrlCh1, setAudioUrlCh1] = useState("");
   const [audioUrlCh2, setAudioUrlCh2] = useState("");
   const [isLoading, setIsLoading] = useState("");
+
+  const [playTime, setPlayTime] = useState(0);
+  const [timeElasped, setTimeElasped] = useState(0);
 
   // // REFS
   const playerCh1 = useRef();
@@ -74,7 +77,7 @@ export default function Player() {
     );
   }, [audioUrlCh1, audioUrlCh2]);
 
-  // LISTEN FOR SOCKETS
+  // LISTEN FOR RECEIVED SOCKETS MESSAGES
   useEffect(() => {
     socketsOn(playerCh1, playerCh2, handleControl, mixerArray);
 
@@ -162,7 +165,14 @@ export default function Player() {
           step={1}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <PlayButton player={playerCh1} onPlay={handlePlay} />
+        <PlayPauseButton
+          player={playerCh1}
+          onPlayPause={handlePlay}
+          setPlayTime={setPlayTime}
+          playTime={playTime}
+          setTimeElasped={setTimeElasped}
+          timeElasped={timeElasped}
+        />
         <button onClick={() => handlePause(playerCh1)}>Pause</button>
 
         {/* CHANNEL 2 */}
@@ -232,7 +242,7 @@ export default function Player() {
           step={1}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <PlayButton onPlay={handlePlay2} player={playerCh2} />
+        <PlayPauseButton onPlayPause={handlePlay2} player={playerCh2} />
         <button onClick={() => handlePause2(playerCh2)}>Pause</button>
       </div>
       <div className={styles.crossfader}>
