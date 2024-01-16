@@ -1,3 +1,3 @@
-export default function handleControl(params) {
+export default function handleControl({player, sendReceive}) {
     
 }

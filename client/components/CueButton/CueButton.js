@@ -1,6 +1,6 @@
 export default function CueButton({player, onCue}) {
-    
+
     return (
-        <button onClick={() => onCue()} >Cue</button>
+        <button onClick={() => onCue(player)} >Cue</button>
     )
 }

@@ -172,7 +172,7 @@ export default function Player() {
           step={1}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <CueButton onCue={handleCue} />
+        <CueButton player={playerCh1} onCue={handleCue} />
         <PlayPauseButton
           player={playerCh1}
           onPlayPause={handlePlayPause}
@@ -248,7 +248,7 @@ export default function Player() {
           step={1}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <CueButton onCue={handleCue} />
+        <CueButton player={playerCh2} onCue={handleCue} />
         <PlayPauseButton
           player={playerCh2}
           onPlayPause={handlePlayPause}
