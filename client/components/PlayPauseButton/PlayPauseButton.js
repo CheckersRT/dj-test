@@ -20,7 +20,7 @@ export default function PlayPauseButton({
         )
       }
     >
-      Play
+      Play/Pause
     </button>
   );
 }
