@@ -8,7 +8,7 @@ import setUpAudio from "@/utils/setUpAudio";
 import uploadAudio from "@/utils/uploadAudio";
 import { socketsOn, socketsOff } from "@/utils/socketsOnOff";
 import {
-  handlePlay,
+  handlePlayPause,
   handlePlay2,
   handlePause,
   handlePause2,
@@ -26,7 +26,7 @@ export default function Player() {
   const [isLoading, setIsLoading] = useState("");
 
   const [playTime, setPlayTime] = useState(0);
-  const [timeElasped, setTimeElasped] = useState(0);
+  const [timeElapsed, setTimeElapsed] = useState(0);
 
   // // REFS
   const playerCh1 = useRef();
@@ -79,10 +79,50 @@ export default function Player() {
 
   // LISTEN FOR RECEIVED SOCKETS MESSAGES
   useEffect(() => {
-    socketsOn(playerCh1, playerCh2, handleControl, mixerArray);
+    // socketsOn(
+    //   playerCh1,
+    //   playerCh2,
+    //   handleControl,
+    //   handlePlayPause,
+    //   mixerArray,
+    //   setPlayTime,
+    //   playTime,
+    //   setTimeElapsed,
+    //   timeElapsed
+    // );
+    socket.on("receive_controlInput", (event) => {
+      handleControl(event, "receive", mixerArray);
+    });
+  
+    socket.on("receive_playCh1", () => {
+      handlePlayPause(
+        playerCh1,
+        setPlayTime,
+        playTime,
+        setTimeElapsed,
+        timeElapsed,
+        "Receive"
+      );
+    });
+    socket.on("receive_playCh2", () => {
+      playerCh2.current.start();
+    });
+    socket.on("receive_pauseCh1", () => {
+      playerCh1.current.stop();
+    });
+    socket.on("receive_pauseCh2", () => {
+      playerCh2.current.stop();
+    });
+
 
     return () => {
-      socketsOff();
+      // socketsOff();
+      socket.off("receive_controlInput");
+      socket.off("receive_playCh1");
+      socket.off("receive_playCh2");
+      socket.off("receive_pauseCh1");
+      socket.off("receive_pauseCh2");
+
     };
   }, [socket]);
 
@@ -167,11 +207,11 @@ export default function Player() {
         />
         <PlayPauseButton
           player={playerCh1}
-          onPlayPause={handlePlay}
+          onPlayPause={handlePlayPause}
           setPlayTime={setPlayTime}
           playTime={playTime}
-          setTimeElasped={setTimeElasped}
-          timeElasped={timeElasped}
+          setTimeElapsed={setTimeElapsed}
+          timeElapsed={timeElapsed}
         />
         <button onClick={() => handlePause(playerCh1)}>Pause</button>
 

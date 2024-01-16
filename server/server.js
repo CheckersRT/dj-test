@@ -31,6 +31,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("send_playCh1", () => {
+    console.log("server engaged with send_playCh1")
     socket.broadcast.emit("receive_playCh1")
   })
 

@@ -1,10 +1,28 @@
 import { socket } from "@/components/Player/Player";
 
-export function handlePlay(player, setPlayTime, playTime, setElaspedTime, elaspedTime) {
-  
-  
-    socket.emit("send_playCh1");
-  player.current.start();
+export function handlePlayPause(
+  player,
+  setPlayTime,
+  playTime,
+  setTimeElapsed,
+  timeElapsed,
+  sendReceive
+) {
+  if (player.current.state === "stopped") {
+    setPlayTime(player.current.context.currentTime);
+    if(sendReceive === "send") {
+        socket.emit("send_playCh1");
+    }
+    player.current.start(0, timeElapsed);
+
+  } else if (player.current.state === "started") {
+    socket.emit("send_pauseCh1");
+    player.current.stop();
+    setTimeElapsed(
+      timeElapsed + (player.current.context.currentTime - playTime)
+    );
+    console.log(timeElapsed)
+  }
 }
 
 export function handlePlay2(playerCh2) {
