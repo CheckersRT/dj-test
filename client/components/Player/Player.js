@@ -4,12 +4,11 @@ import * as Tone from "tone/build/esm";
 import { useEffect, useRef, useState } from "react";
 import styles from "./Player.module.css";
 import io from "socket.io-client";
-import {playerCh1, playerCh2, playerMaster, mixerArray, crossFader} from "@/utils/setUpAudio"
+import setUpAudio from "@/utils/setUpAudio";
 
 const socket = io.connect("http://localhost:3001");
 
 export default function Player() {
-
   // STATES
   const [audioFile, setAudioFile] = useState("");
   const [audioUrlCh1, setAudioUrlCh1] = useState("");
@@ -17,22 +16,37 @@ export default function Player() {
   const [isLoading, setIsLoading] = useState("");
 
   // // REFS
-  // const playerCh1 = useRef();
-  // const playerCh2 = useRef();
-  // const playerMaster = useRef();
-  // const eqCh1 = useRef();
-  // const eqCh2 = useRef();
-  // const crossFader = useRef();
-  // const gainCh1 = useRef();
-  // const gainCh2 = useRef();
-  // // const filterHpCh1 = useRef();
-  // // const filterHpCh2 = useRef();
-  // // const filterLpCh1 = useRef();
-  // // const filterLpCh2 = useRef();
-  // const meterCh1 = useRef();
-  // const meterCh2 = useRef();
+  const playerCh1 = useRef();
+  const playerCh2 = useRef();
+  const playerMaster = useRef();
+  const eqCh1 = useRef();
+  const eqCh2 = useRef();
+  const crossFader = useRef();
+  const gainCh1 = useRef();
+  const gainCh2 = useRef();
+  // const filterHpCh1 = useRef();
+  // const filterHpCh2 = useRef();
+  // const filterLpCh1 = useRef();
+  // const filterLpCh2 = useRef();
+  const meterCh1 = useRef();
+  const meterCh2 = useRef();
   // const mixerArray = useRef();
 
+  // mixerArray.current = [];
+  // mixerArray.current.push(
+  //   playerMaster.current,
+  //   playerCh1.current,
+  //   playerCh2.current,
+  //   gainCh1.current,
+  //   gainCh2.current,
+  //   eqCh1.current,
+  //   eqCh2.current,
+  //   // filterHpCh1.current,
+  //   // filterLpCh1.current,
+  //   // filterHpCh2.current,
+  //   // filterLpCh2.current,
+  //   crossFader.current
+  // );
 
   useEffect(() => {
     socket.on("receive_controlInput", (event) => {
@@ -40,16 +54,16 @@ export default function Player() {
     });
     socket.on("receive_playCh1", () => {
       playerCh1.current.start();
-    })
+    });
     socket.on("receive_playCh2", () => {
       playerCh2.current.start();
-    })
+    });
     socket.on("receive_pauseCh1", () => {
       playerCh1.current.stop();
-    })
+    });
     socket.on("receive_pauseCh2", () => {
       playerCh2.current.stop();
-    })
+    });
 
     return () => {
       socket.off("receive_controlInput");
@@ -58,13 +72,21 @@ export default function Player() {
       socket.off("receive_pauseCh1");
       socket.off("receive_pauseCh2");
     };
-
   }, [socket]);
 
   useEffect(() => {
-
-    setUpAudio(audioUrlCh1, audioUrlCh2)
-
+    setUpAudio(
+      playerCh1,
+      playerCh2,
+      playerMaster,
+      eqCh1,
+      eqCh2,
+      gainCh1,
+      gainCh2,
+      crossFader,
+      audioUrlCh1,
+      audioUrlCh2
+    );
 
     // playerMaster.current = new Tone.Players({
     //   urls: {
@@ -147,23 +169,23 @@ export default function Player() {
   }, [audioUrlCh1, audioUrlCh2]);
 
   function handlePlay(event) {
-    socket.emit("send_playCh1")
+    socket.emit("send_playCh1");
     // const now = Tone.now()
-    console.log(playerCh1.current.context)
+    console.log(playerCh1.current.context);
     playerCh1.current.start();
   }
 
   function handlePlay2() {
-    socket.emit("send_playCh2")
+    socket.emit("send_playCh2");
     // const now = Tone.now()
     playerCh2.current.start();
   }
   function handlePause() {
-    socket.emit("send_pauseCh1")
+    socket.emit("send_pauseCh1");
     playerCh1.current.stop();
   }
   function handlePause2() {
-    socket.emit("send_pauseCh2")
+    socket.emit("send_pauseCh2");
     playerCh2.current.stop();
   }
 
@@ -172,11 +194,11 @@ export default function Player() {
   }
 
   function handleControl(event, sendReceive) {
-    if(sendReceive === "send") {
-    socket.emit("send_controlInput", {
-      name: event.name,
-      value: event.value,
-    });
+    if (sendReceive === "send") {
+      socket.emit("send_controlInput", {
+        name: event.name,
+        value: event.value,
+      });
     }
     const channel = event.name.split("-")[0];
     const channelCaps = channel.charAt(0).toUpperCase() + channel.slice(1);

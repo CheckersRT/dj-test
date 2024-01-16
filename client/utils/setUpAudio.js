@@ -1,24 +1,18 @@
 import { useRef } from "react";
+import * as Tone from "tone/build/esm/";
 
-export function setUpAudio(urlCh1, urlCh2) {
-    const playerCh1 = useRef();
-    const playerCh2 = useRef();
-    const playerMaster = useRef();
-    const eqCh1 = useRef();
-    const eqCh2 = useRef();
-    const crossFader = useRef();
-    const gainCh1 = useRef();
-    const gainCh2 = useRef();
-    // const filterHpCh1 = useRef();
-    // const filterHpCh2 = useRef();
-    // const filterLpCh1 = useRef();
-    // const filterLpCh2 = useRef();
-    const meterCh1 = useRef();
-    const meterCh2 = useRef();
-    const mixerArray = useRef();
-
-      // REFS
-
+export default function setUpAudio(
+  playerCh1,
+  playerCh2,
+  playerMaster,
+  eqCh1,
+  eqCh2,
+  gainCh1,
+  gainCh2,
+  crossFader,
+  audioUrlCh1,
+  audioUrlCh2
+) {
   playerMaster.current = new Tone.Players({
     urls: {
       // playerCh1: urlCh1,
@@ -59,10 +53,10 @@ export function setUpAudio(urlCh1, urlCh2) {
   // filterLpCh2.current.name = "filterLpCh2";
   // console.log(filterLpCh1);
 
-  meterCh1.current = new Tone.Meter();
-  meterCh1.current.name = "meterCh1";
-  meterCh2.current = new Tone.Meter();
-  meterCh2.current.name = "meterCh1";
+  //   meterCh1.current = new Tone.Meter();
+  //   meterCh1.current.name = "meterCh1";
+  //   meterCh2.current = new Tone.Meter();
+  //   meterCh2.current.name = "meterCh1";
 
   crossFader.current = new Tone.CrossFade();
   crossFader.current.name = "crossFaderChAll";
@@ -82,22 +76,4 @@ export function setUpAudio(urlCh1, urlCh2) {
     // filterLpCh2.current,
     crossFader.current.b
   );
-
-  mixerArray.current = [];
-  mixerArray.current.push(
-    playerCh1.current,
-    playerCh2.current,
-    gainCh1.current,
-    gainCh2.current,
-    eqCh1.current,
-    eqCh2.current,
-    // filterHpCh1.current,
-    // filterLpCh1.current,
-    // filterHpCh2.current,
-    // filterLpCh2.current,
-    crossFader.current
-  );
-
-
 }
-export {playerCh1, playerCh2, playerMaster, crossFader, mixerArray}
