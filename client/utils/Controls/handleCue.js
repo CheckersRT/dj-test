@@ -1,3 +1,3 @@
-export default function handleControl({player, sendReceive}) {
+export default function handleCue({player, sendReceive}) {
     
 }

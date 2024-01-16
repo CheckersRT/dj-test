@@ -8,7 +8,7 @@ export default function handleControl(event, sendReceive, mixerArray) {
       });
     }
 
-    // console.log(mixerArray.current)
+    console.log(mixerArray.current)
     const channel = event.name.split("-")[0];
     const channelCaps = channel.charAt(0).toUpperCase() + channel.slice(1);
     const type = event.name.split("-")[1];
