@@ -7,12 +7,7 @@ import io from "socket.io-client";
 import setUpAudio from "@/utils/setUpAudio";
 import uploadAudio from "@/utils/uploadAudio";
 import { socketsOn, socketsOff } from "@/utils/socketsOnOff";
-import {
-  handlePlay,
-  handlePlay2,
-  handlePause,
-  handlePause2,
-} from "@/utils/Controls/handlePlayPause";
+import { handlePlayPause } from "@/utils/Controls/handlePlayPause";
 import handleStopAll from "@/utils/Controls/handleStopAll";
 import handleControl from "@/utils/Controls/handleControl";
 
@@ -26,7 +21,7 @@ export default function Player() {
   const [isLoading, setIsLoading] = useState("");
 
   const [playTime, setPlayTime] = useState(0);
-  const [timeElasped, setTimeElasped] = useState(0);
+  const [timeElapsed, setTimeElapsed] = useState(0);
 
   // // REFS
   const playerCh1 = useRef();
@@ -79,10 +74,21 @@ export default function Player() {
 
   // LISTEN FOR RECEIVED SOCKETS MESSAGES
   useEffect(() => {
-    socketsOn(playerCh1, playerCh2, handleControl, mixerArray);
+    socketsOn(
+      playerCh1,
+      playerCh2,
+      handleControl,
+      handlePlayPause,
+      mixerArray,
+      setPlayTime,
+      playTime,
+      setTimeElapsed,
+      timeElapsed
+    );
 
     return () => {
       socketsOff();
+
     };
   }, [socket]);
 
@@ -167,14 +173,12 @@ export default function Player() {
         />
         <PlayPauseButton
           player={playerCh1}
-          onPlayPause={handlePlay}
+          onPlayPause={handlePlayPause}
           setPlayTime={setPlayTime}
           playTime={playTime}
-          setTimeElasped={setTimeElasped}
-          timeElasped={timeElasped}
+          setTimeElapsed={setTimeElapsed}
+          timeElapsed={timeElapsed}
         />
-        <button onClick={() => handlePause(playerCh1)}>Pause</button>
-
         {/* CHANNEL 2 */}
         <form name="player2" onSubmit={handleSubmit}>
           <label htmlFor="image">Deck 2</label>
@@ -242,8 +246,14 @@ export default function Player() {
           step={1}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <PlayPauseButton onPlayPause={handlePlay2} player={playerCh2} />
-        <button onClick={() => handlePause2(playerCh2)}>Pause</button>
+        <PlayPauseButton
+          player={playerCh2}
+          onPlayPause={handlePlayPause}
+          setPlayTime={setPlayTime}
+          playTime={playTime}
+          setTimeElapsed={setTimeElapsed}
+          timeElapsed={timeElapsed}
+        />
       </div>
       <div className={styles.crossfader}>
         <label htmlFor="chAll-crossFader-fade">Crossfader</label>

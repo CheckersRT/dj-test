@@ -20,30 +20,13 @@ io.on("connection", (socket) => {
 
 // socket.on("join_room", )
 
-  socket.on("send_message", (data) => {
-    console.log(data);
-    socket.broadcast.emit("receive_message", data);
-  });
-
   socket.on("send_controlInput", (data) => {
-    console.log(data)
     socket.broadcast.emit("receive_controlInput", data)
   })
-
-  socket.on("send_playCh1", () => {
-    socket.broadcast.emit("receive_playCh1")
-  })
-
-  socket.on("send_playCh2", () => {
-    socket.broadcast.emit("receive_playCh2")
-  })
-
-  socket.on("send_pauseCh1", () => {
-    socket.broadcast.emit("receive_pauseCh1")
-  })
-
-  socket.on("send_pauseCh2", () => {
-    socket.broadcast.emit("receive_pauseCh2")
+  
+  socket.on("send_playPause", (data) => {
+    console.log(data)
+    socket.broadcast.emit("receive_play", data)
   })
 
 });
