@@ -9,7 +9,7 @@ export default function PlayPauseButton({
 }) {
   return (
     <button
-      onClick={(event) =>
+      onClick={() =>
         onPlayPause(
           player,
           setPlayTime,

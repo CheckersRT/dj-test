@@ -12,6 +12,9 @@ import handleStopAll from "@/utils/Controls/handleStopAll";
 import handleControl from "@/utils/Controls/handleControl";
 import CueButton from "../CueButton/CueButton";
 import handleCue from "@/utils/Controls/handleStopAll";
+import EqKnob from "../EqKnob/EqKnob";
+import GainKnob from "../GainKnob/GainKnob";
+import Load from "../Load/Load";
 
 export const socket = io.connect("http://localhost:3001");
 
@@ -102,57 +105,43 @@ export default function Player() {
     event.target.name === "player2" && setAudioUrlCh2(url);
   }
 
+  const channelArray = [
+    {
+      id: "1",
+      channel: ["gain", { eqs: ["high", "mid", "low"] }, "filter", "fader"],
+    },
+    {
+      id: "2",
+      channel: ["gain", { eqs: ["high", "mid", "low"] }, "filter", "fader"],
+    },
+  ];
+
   return (
     <div className={styles.main}>
       <div className={styles.container}>
-        <form name="player1" onSubmit={handleSubmit}>
-          <label htmlFor="image">Deck 1</label>
-          <input
-            id="image"
-            type="file"
-            onChange={(event) =>
-              event.target ? setAudioFile(event.target.files[0]) : null
-            }
+        <Load
+          name={`player${channelArray[0].id}`}
+          audioFile={audioFile}
+          setAudioFile={setAudioFile}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          setAudioUrlCh1={setAudioUrlCh1}
+          setAudioUrlCh2={setAudioUrlCh2}
+        />
+
+        {/* ------------ GAIN ---------------*/}
+
+        <GainKnob channel={channelArray[0].id} mixerArray={mixerArray} />
+
+        {/* ------------ EQS ---------------*/}
+        {channelArray[0].channel[1].eqs.map((eq) => (
+          <EqKnob
+            channel={channelArray[0].id}
+            param={eq}
+            key={eq}
+            mixerArray={mixerArray}
           />
-          <button type="submit">Load</button>
-        </form>
-        {isLoading && <p>Loading track...</p>}
-        <label htmlFor="ch1-gain-gain">Gain</label>
-        <input
-          name="ch1-gain-gain"
-          id="ch1-gain-gain"
-          type="range"
-          min={-20}
-          max={20}
-          onChange={(event) => handleControl(event.target, "send", mixerArray)}
-        />
-        <label htmlFor="ch1-eq-high">High</label>
-        <input
-          name="ch1-eq-high"
-          id="ch1-eq-high"
-          type="range"
-          min={-20}
-          max={20}
-          onChange={(event) => handleControl(event.target, "send", mixerArray)}
-        />
-        <label htmlFor="ch1-eq-mid">Mid</label>
-        <input
-          name="ch1-eq-mid"
-          id="ch1-eq-mid"
-          type="range"
-          min={-20}
-          max={20}
-          onChange={(event) => handleControl(event.target, "send", mixerArray)}
-        />
-        <label htmlFor="ch1-eq-low">Low</label>
-        <input
-          name="ch1-eq-low"
-          id="ch1-eq-low"
-          type="range"
-          min={-20}
-          max={20}
-          onChange={(event) => handleControl(event.target, "send", mixerArray)}
-        />
+        ))}
         {/* <label htmlFor="ch1-filter-frequency">Filter</label>
         <input
           name="ch1-filter-frequency"
@@ -172,7 +161,7 @@ export default function Player() {
           step={1}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <CueButton onCue={handleCue} />
+        <CueButton player={playerCh1} onCue={handleCue} />
         <PlayPauseButton
           player={playerCh1}
           onPlayPause={handlePlayPause}
@@ -182,53 +171,26 @@ export default function Player() {
           timeElapsed={timeElapsed}
         />
         {/* CHANNEL 2 */}
-        <form name="player2" onSubmit={handleSubmit}>
-          <label htmlFor="image">Deck 2</label>
-          <input
-            id="image"
-            type="file"
-            onChange={(event) =>
-              event.target ? setAudioFile(event.target.files[0]) : null
-            }
+        <Load
+          name={`player${channelArray[1].id}`}
+          audioFile={audioFile}
+          setAudioFile={setAudioFile}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          setAudioUrlCh1={setAudioUrlCh1}
+          setAudioUrlCh2={setAudioUrlCh2}
+        />
+        {/* ------------ GAIN ---------------*/}
+        <GainKnob channel={channelArray[0].id} mixerArray={mixerArray} />
+        {/* ------------ EQS ---------------*/}
+        {channelArray[1].channel[1].eqs.map((eq) => (
+          <EqKnob
+            channel={channelArray[1].id}
+            param={eq}
+            key={eq}
+            mixerArray={mixerArray}
           />
-          <button type="submit">Load</button>
-        </form>
-        <label htmlFor="ch2-gain-gain">Gain</label>
-        <input
-          name="ch2-gain-gain"
-          id="ch2-gain-gain"
-          type="range"
-          min={-20}
-          max={20}
-          onChange={(event) => handleControl(event.target, "send", mixerArray)}
-        />
-        <label htmlFor="ch2-eq-high">High</label>
-        <input
-          name="ch2-eq-high"
-          id="ch2-eq-high"
-          type="range"
-          min={-20}
-          max={20}
-          onChange={(event) => handleControl(event.target, "send", mixerArray)}
-        />
-        <label htmlFor="ch2-eq-mid">Mid</label>
-        <input
-          name="ch2-eq-mid"
-          id="ch2-eq-mid"
-          type="range"
-          min={-20}
-          max={20}
-          onChange={(event) => handleControl(event.target, "send", mixerArray)}
-        />
-        <label htmlFor="ch2-eq-low">Low</label>
-        <input
-          name="ch2-eq-low"
-          id="ch2-eq-low"
-          type="range"
-          min={-20}
-          max={20}
-          onChange={(event) => handleControl(event.target, "send", mixerArray)}
-        />
+        ))}
         {/* <label htmlFor="ch2-filter-frequency">Filter</label>
         <input
           name="ch2-filter-frequency"
@@ -248,7 +210,7 @@ export default function Player() {
           step={1}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <CueButton onCue={handleCue} />
+        <CueButton player={playerCh2} onCue={handleCue} />
         <PlayPauseButton
           player={playerCh2}
           onPlayPause={handlePlayPause}
