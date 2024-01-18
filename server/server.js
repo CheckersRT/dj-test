@@ -23,10 +23,19 @@ io.on("connection", (socket) => {
   socket.on("send_controlInput", (data) => {
     socket.broadcast.emit("receive_controlInput", data)
   })
+
+  socket.on("send_controlGain", (data) => {
+    socket.broadcast.emit("receive_controlGain", data)
+  })
   
   socket.on("send_playPause", (data) => {
     console.log(data)
-    socket.broadcast.emit("receive_play", data)
+    socket.broadcast.emit("receive_playPause", data)
+  })
+
+  socket.on("send_Cue", (data) => {
+    console.log(data)
+    socket.broadcast.emit("receive_Cue", data)
   })
 
 });

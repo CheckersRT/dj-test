@@ -1,4 +1,5 @@
 import handleControl from "@/utils/Controls/handleControl"
+import handleGain from "@/utils/Controls/handleGain"
 
 export default function GainKnob({channel, mixerArray}) {
     return (
@@ -10,7 +11,7 @@ export default function GainKnob({channel, mixerArray}) {
           type="range"
           min={-20}
           max={20}
-          onChange={(event) => handleControl(event.target, "send", mixerArray)}
+          onChange={(event) => handleGain(event.target, "send", mixerArray, channel)}
         />
       </>
     )

@@ -1,6 +1,7 @@
 import handleSubmit from "@/utils/Controls/handleSubmit";
 
 export default function Load({
+  channel,
   audioFile,
   setAudioFile,
   isLoading,
@@ -13,7 +14,7 @@ export default function Load({
   return (
     <>
       <form
-        name="player1"
+        name={`playerCh${channel}`}
         onSubmit={(event) =>
           handleSubmit(
             event,

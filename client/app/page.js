@@ -1,10 +1,9 @@
-import Player from "@/components/Player/Player";
+import Controller from "@/components/Controller/Controller";
 
 export default function Home() {
-
   return (
     <div>
-      <Player/>
+      <Controller />
     </div>
   );
 }

@@ -15,7 +15,7 @@ export default function setUpAudio(
 ) {
   playerMaster.current = new Tone.Players({
     urls: {
-    //   playerCh1: audioUrlCh1,
+      //   playerCh1: audioUrlCh1,
       playerCh1: "/Prevail.wav",
       // playerCh2: urlCh2,
       playerCh2: "/DamnFineDay.wav",
@@ -30,9 +30,14 @@ export default function setUpAudio(
   playerCh2.current = playerMaster.current.player("playerCh2");
   playerCh2.current.name = "playerCh2";
 
-  gainCh1.current = new Tone.Gain();
+  gainCh1.current = new Tone.Gain({
+    gain: 0,
+    units: "decibels",
+    maxValue: 10,
+    minValue: -40,
+  });
   gainCh1.current.name = "gainCh1";
-  gainCh2.current = new Tone.Gain();
+  gainCh2.current = new Tone.Gain(1);
   gainCh2.current.name = "gainCh2";
   console.log(gainCh1.current);
 
