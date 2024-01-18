@@ -1,35 +1,18 @@
-.main {
-  /* height: 800px; */
-  width: 90vw;
-  margin: auto;
-}
-
-.main > * {
-  border: 1px solid white;
-}
 .container {
   display: grid;
   /* height: 90%; */
-  width: 100%;
+  width: 90vw;
   margin: auto;
   grid-auto-flow: column;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 2fr;
   /* grid-template-rows: 2fr 1fr 2fr 1fr 2fr 1fr 2fr 1fr 2fr 1fr 3fr 2fr 2fr; */
 }
 
-/* .container > form > * {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-} */
-
-/* .crossfader {
-  width: 100%;
-  height: 50px;
-} */
-
-
 .container > * {
-  border: red 1px solid;
+  border: blue 1px solid;
   width: 100%; }
 
+.column {
+  display: flex;
+  flex-direction: column;
+}

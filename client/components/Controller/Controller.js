@@ -91,8 +91,8 @@ export default function Controller() {
   }, [socket]);
 
   return (
-    <div className={styles.main}>
-      <div className={styles.container}>
+    <div className={styles.container}>
+      <div className={styles.column}>
         <Player
           channel={1}
           audioFile={audioFile}
@@ -108,7 +108,11 @@ export default function Controller() {
           timeElapsed={timeElapsed}
           setTimeElapsed={setTimeElapsed}
         />
-        <Mixer mixerArray={mixerArray}/>
+      </div>
+      <div className={styles.column}>
+        <Mixer mixerArray={mixerArray} />
+      </div>
+      <div className={styles.column}>
         <Player
           channel={2}
           audioFile={audioFile}
