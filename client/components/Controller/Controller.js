@@ -6,7 +6,6 @@ import setUpAudio from "@/utils/setUpAudio";
 import { socketsOn, socketsOff } from "@/utils/socketsOnOff";
 import { handlePlayPause } from "@/utils/Controls/handlePlayPause";
 import handleControl from "@/utils/Controls/handleControl";
-import handleCue from "@/utils/Controls/handleCue";
 import Player from "../Player/Player";
 import Mixer from "../Mixer/Mixer";
 
@@ -18,7 +17,6 @@ export default function Controller() {
   const [audioUrlCh1, setAudioUrlCh1] = useState("");
   const [audioUrlCh2, setAudioUrlCh2] = useState("");
   const [isLoading, setIsLoading] = useState("");
-
   const [playTime, setPlayTime] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState(0);
 
