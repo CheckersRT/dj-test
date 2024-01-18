@@ -1,6 +1,7 @@
 import PlayPauseButton from "@/components/PlayPauseButton/PlayPauseButton";
 import CueButton from "../CueButton/CueButton";
 import Load from "../Load/Load";
+import styles from "./Player.module.css"
 
 export default function player({
   channel,
@@ -18,7 +19,7 @@ export default function player({
   setTimeElapsed,
 }) {
   return (
-    <>
+    <div className={styles.container}>
       <Load
         channel={channel}
         audioFile={audioFile}
@@ -37,6 +38,6 @@ export default function player({
         setTimeElapsed={setTimeElapsed}
         timeElapsed={timeElapsed}
       />
-    </>
+    </div>
   );
 }

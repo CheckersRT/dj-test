@@ -6,5 +6,5 @@ export default function handleCue(player, sendReceive) {
       player: player.current.name,
     });
   }
-  player.current.stop();
+  player.current.stop(0,0);
 }

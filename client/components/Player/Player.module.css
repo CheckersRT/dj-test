@@ -1,0 +1,10 @@
+.container {
+    height: 80%;
+    margin: auto;
+}
+
+.container > * {
+    height: 30%;
+    width: 80%;
+    border: white 1px solid;
+}
