@@ -17,8 +17,9 @@ export function socketsOn(
     handleControl(event, "receive", mixerArray);
   });
 
+  let player; 
   socket.on("receive_playPause", (data) => {
-    let player;
+    console.log(data)
     if (data.player === "playerCh1") {
       player = playerCh1;
     } else if (data.player === "playerCh2") {
@@ -26,11 +27,12 @@ export function socketsOn(
     }
     handlePlayPause(
       player,
+      mixerArray,
       setPlayTime,
       playTime,
       setTimeElapsed,
       timeElapsed,
-      "Receive"
+      "receive"
     );
   });
 }

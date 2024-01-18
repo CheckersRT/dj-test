@@ -7,8 +7,6 @@ export default function handleControl(event, sendReceive, mixerArray) {
         value: event.value,
       });
     }
-
-    console.log(mixerArray.current)
     const channel = event.name.split("-")[0];
     const channelCaps = channel.charAt(0).toUpperCase() + channel.slice(1);
     const type = event.name.split("-")[1];
@@ -17,7 +15,6 @@ export default function handleControl(event, sendReceive, mixerArray) {
     const nodeObject = mixerArray.current.find(
       (obj) => obj.current.name === objectName
     );
-    console.log(nodeObject)
     nodeObject.current[param].value = event.value;
     console.log(nodeObject.current[param].value);
   }

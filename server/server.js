@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
   
   socket.on("send_playPause", (data) => {
     console.log(data)
-    socket.broadcast.emit("receive_play", data)
+    socket.broadcast.emit("receive_playPause", data)
   })
 
 });

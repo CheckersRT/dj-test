@@ -1,7 +1,9 @@
-"use client";
+import { handlePlayPause } from "@/utils/Controls/handlePlayPause";
+import Player from "../Player/Player";
+
 export default function PlayPauseButton({
-  onPlayPause,
   player,
+  mixerArray,
   setPlayTime,
   playTime,
   setTimeElapsed,
@@ -10,8 +12,9 @@ export default function PlayPauseButton({
   return (
     <button
       onClick={() =>
-        onPlayPause(
+        handlePlayPause(
           player,
+          mixerArray,
           setPlayTime,
           playTime,
           setTimeElapsed,

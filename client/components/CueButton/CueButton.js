@@ -1,6 +1,8 @@
-export default function CueButton({player, onCue}) {
+import handleCue from "@/utils/Controls/handleCue"
+
+export default function CueButton({channel, mixerArray}) {
 
     return (
-        <button onClick={() => onCue(player)} >Cue</button>
+        <button onClick={() => handleCue(channel, mixerArray)} >Cue</button>
     )
 }

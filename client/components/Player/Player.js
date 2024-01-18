@@ -16,6 +16,7 @@ import EqKnob from "../EqKnob/EqKnob";
 import GainKnob from "../GainKnob/GainKnob";
 import Load from "../Load/Load";
 import VolumeFader from "../VolumeFader/VolumeFader";
+import FilterKnob from "../FilterKnob/FilterKnob";
 
 export const socket = io.connect("http://localhost:3001");
 
@@ -120,11 +121,8 @@ export default function Player() {
   return (
     <div className={styles.main}>
       <div className={styles.container}>
-
-        {/* ------------ LOAD ---------------*/}
-
         <Load
-          name={`player${channelArray[0].id}`}
+          channel={1}
           audioFile={audioFile}
           setAudioFile={setAudioFile}
           isLoading={isLoading}
@@ -132,37 +130,16 @@ export default function Player() {
           setAudioUrlCh1={setAudioUrlCh1}
           setAudioUrlCh2={setAudioUrlCh2}
         />
-
-        {/* ------------ GAIN ---------------*/}
-
-        <GainKnob channel={channelArray[0].id} mixerArray={mixerArray} />
-
-        {/* ------------ EQS ---------------*/}
-        {channelArray[0].channel[1].eqs.map((eq) => (
-          <EqKnob
-            channel={channelArray[0].id}
-            param={eq}
-            key={eq}
-            mixerArray={mixerArray}
-          />
-        ))}
-
-        {/* ------------ FILTER ---------------*/}
-
-        {/* <label htmlFor="ch1-filter-frequency">Filter</label>
-        <input
-          name="ch1-filter-frequency"
-          id="ch1-filter-frequency"
-          type="range"
-          min={40}
-          max={5000}
-          onChange={(event) => handleControl(event)}
-        /> */}
-        <VolumeFader channel={channelArray[0].id} mixerArray={mixerArray} />
-        <CueButton player={playerCh1} onCue={handleCue} />
+        <GainKnob channel={1} mixerArray={mixerArray}/>
+        <EqKnob channel={1} param={"high"} mixerArray={mixerArray} />
+        <EqKnob channel={1} param={"mid"} mixerArray={mixerArray} />
+        <EqKnob channel={1} param={"low"} mixerArray={mixerArray} />
+        {/* <FilterKnob channel={1} mixerArray={mixerArray}/> */}
+        <VolumeFader channel={1} mixerArray={mixerArray} />
+        <CueButton channel={1} mixerArray={mixerArray} />
         <PlayPauseButton
           player={playerCh1}
-          onPlayPause={handlePlayPause}
+          mixerArray={mixerArray}
           setPlayTime={setPlayTime}
           playTime={playTime}
           setTimeElapsed={setTimeElapsed}

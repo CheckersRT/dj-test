@@ -2,12 +2,23 @@ import { socket } from "@/components/Player/Player";
 
 export function handlePlayPause(
   player,
+  mixerArray,
   setPlayTime,
   playTime,
   setTimeElapsed,
   timeElapsed,
   sendReceive
 ) {
+
+  // const player = "playerCh" + channel;
+  if(sendReceive === "receive") {
+    console.log("success")
+  }
+
+  console.log(player)
+
+  // const playerObject = mixerArray.current.find((obj) => obj.current.name === player)
+  // console.log(playerObject)
 
   if(sendReceive === "send") {
     // socket.emit("send_playCh1");
