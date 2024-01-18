@@ -8,10 +8,9 @@ import setUpAudio from "@/utils/setUpAudio";
 import uploadAudio from "@/utils/uploadAudio";
 import { socketsOn, socketsOff } from "@/utils/socketsOnOff";
 import { handlePlayPause } from "@/utils/Controls/handlePlayPause";
-import handleStopAll from "@/utils/Controls/handleStopAll";
 import handleControl from "@/utils/Controls/handleControl";
+import handleCue from "@/utils/Controls/handleCue";
 import CueButton from "../CueButton/CueButton";
-import handleCue from "@/utils/Controls/handleStopAll";
 import EqKnob from "../EqKnob/EqKnob";
 import GainKnob from "../GainKnob/GainKnob";
 import Load from "../Load/Load";
@@ -136,7 +135,7 @@ export default function Player() {
         <EqKnob channel={1} param={"low"} mixerArray={mixerArray} />
         {/* <FilterKnob channel={1} mixerArray={mixerArray}/> */}
         <VolumeFader channel={1} mixerArray={mixerArray} />
-        <CueButton channel={1} mixerArray={mixerArray} />
+        <CueButton channel={1} mixerArray={mixerArray} player={playerCh1} />
         <PlayPauseButton
           player={playerCh1}
           mixerArray={mixerArray}
@@ -206,7 +205,7 @@ export default function Player() {
           step={0.01}
           onChange={(event) => handleControl(event.target, "send", mixerArray)}
         />
-        <button onClick={() => handleStopAll(playerMaster)}>Stop All</button>
+        <button onClick={() => handleCue(playerMaster)}>Stop All</button>
       </div>
     </div>
   );

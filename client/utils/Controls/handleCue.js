@@ -1,6 +1,11 @@
-export default function handleCue(channel, mixerArray) {
-    const player = "playerCh" + channel
-    
-    const playerObject = mixerArray.current.find((obj) => obj.current.name === player)
-    playerObject.current.stop()
+import { socket } from "@/components/Player/Player";
+
+export default function handleCue(player, sendReceive) {
+
+    if (sendReceive === "send") {
+        socket.emit("send_Cue", {
+          player: player.current.name
+        });
+      }    
+    player.current.stop()
 }

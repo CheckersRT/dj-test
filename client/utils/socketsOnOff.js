@@ -1,5 +1,7 @@
 import io from "socket.io-client";
 import { socket } from "@/components/Player/Player";
+import handleGain from "./Controls/handleGain";
+import handleCue from "./Controls/handleCue";
 
 export function socketsOn(
   playerCh1,
@@ -17,8 +19,15 @@ export function socketsOn(
     handleControl(event, "receive", mixerArray);
   });
 
-  let player; 
+  socket.on("receive_controlGain", (data) => {
+    
+    handleGain(data, "receive", mixerArray, data.channel);
+  });
+
+
+
   socket.on("receive_playPause", (data) => {
+    let player; 
     console.log(data)
     if (data.player === "playerCh1") {
       player = playerCh1;
@@ -35,6 +44,23 @@ export function socketsOn(
       "receive"
     );
   });
+
+  socket.on("receive_Cue", (data) => {
+    let player; 
+    console.log(data)
+    if (data.player === "playerCh1") {
+      player = playerCh1;
+    } else if (data.player === "playerCh2") {
+      player = playerCh2;
+    }
+    handleCue(
+      player,
+      "receive"
+    );
+  });
+
+
+
 }
 
 export function socketsOff() {

@@ -14,6 +14,7 @@ export default function handleGain(event, sendReceive, mixerArray, channel) {
       socket.emit("send_controlGain", {
         name: event.name,
         value: gainValue,
+        channel: channel,
       });
     }
     // const channel = event.name.split("-")[0];
