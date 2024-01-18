@@ -1,5 +1,5 @@
 import { handlePlayPause } from "@/utils/Controls/handlePlayPause";
-import Player from "../Player/Player";
+import Player from "../Controller/Controller";
 
 export default function PlayPauseButton({
   player,

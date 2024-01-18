@@ -1,4 +1,4 @@
-import { socket } from "@/components/Player/Player";
+import { socket } from "@/components/Controller/Controller";
 
 export function handlePlayPause(
   player,
@@ -9,27 +9,25 @@ export function handlePlayPause(
   timeElapsed,
   sendReceive
 ) {
-
   // const player = "playerCh" + channel;
-  if(sendReceive === "receive") {
-    console.log("success")
+  if (sendReceive === "receive") {
+    console.log("success");
   }
 
-  console.log(player)
+  console.log(player);
 
   // const playerObject = mixerArray.current.find((obj) => obj.current.name === player)
   // console.log(playerObject)
 
-  if(sendReceive === "send") {
+  if (sendReceive === "send") {
     // socket.emit("send_playCh1");
-    socket.emit("send_playPause", {player: player.current.name});
-}
+    socket.emit("send_playPause", { player: player.current.name });
+  }
 
   if (player.current.state === "stopped") {
     setPlayTime(player.current.context.currentTime);
-    
-    player.current.start(0, timeElapsed);
 
+    player.current.start(0, timeElapsed);
   } else if (player.current.state === "started") {
     // if(sendReceive === "send") {
     //   // socket.emit("send_pauseCh1");
@@ -39,7 +37,6 @@ export function handlePlayPause(
     setTimeElapsed(
       timeElapsed + (player.current.context.currentTime - playTime)
     );
-    console.log(timeElapsed)
+    console.log(timeElapsed);
   }
 }
-
