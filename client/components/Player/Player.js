@@ -15,6 +15,7 @@ import handleCue from "@/utils/Controls/handleStopAll";
 import EqKnob from "../EqKnob/EqKnob";
 import GainKnob from "../GainKnob/GainKnob";
 import Load from "../Load/Load";
+import VolumeFader from "../VolumeFader/VolumeFader";
 
 export const socket = io.connect("http://localhost:3001");
 
@@ -108,17 +109,20 @@ export default function Player() {
   const channelArray = [
     {
       id: "1",
-      channel: ["gain", { eqs: ["high", "mid", "low"] }, "filter", "fader"],
+      channel: ["gain", { eqs: ["high", "mid", "low"] }, "filter", "volume"],
     },
     {
       id: "2",
-      channel: ["gain", { eqs: ["high", "mid", "low"] }, "filter", "fader"],
+      channel: ["gain", { eqs: ["high", "mid", "low"] }, "filter", "volume"],
     },
   ];
 
   return (
     <div className={styles.main}>
       <div className={styles.container}>
+
+        {/* ------------ LOAD ---------------*/}
+
         <Load
           name={`player${channelArray[0].id}`}
           audioFile={audioFile}
@@ -142,6 +146,9 @@ export default function Player() {
             mixerArray={mixerArray}
           />
         ))}
+
+        {/* ------------ FILTER ---------------*/}
+
         {/* <label htmlFor="ch1-filter-frequency">Filter</label>
         <input
           name="ch1-filter-frequency"
@@ -151,16 +158,7 @@ export default function Player() {
           max={5000}
           onChange={(event) => handleControl(event)}
         /> */}
-        <label htmlFor="ch1-player-volume">Volume</label>
-        <input
-          name="ch1-player-volume"
-          id="ch1-player-volume"
-          type="range"
-          min={-20}
-          max={10}
-          step={1}
-          onChange={(event) => handleControl(event.target, "send", mixerArray)}
-        />
+        <VolumeFader channel={channelArray[0].id} mixerArray={mixerArray} />
         <CueButton player={playerCh1} onCue={handleCue} />
         <PlayPauseButton
           player={playerCh1}
